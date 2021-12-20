@@ -5,6 +5,7 @@ import time
 
 import schedule
 import speedtest
+import typer
 
 
 settings = {
@@ -67,7 +68,7 @@ def write_to_csv(row):
         f.write(row)
 
 
-def main():
+def task():
     logger.info('Script Started')
 
     result = measure()
@@ -79,7 +80,7 @@ def main():
 
 
 def run_job():
-    schedule.every(10).minutes.do(main)
+    schedule.every(10).minutes.do(task)
     schedule.run_all()
     while True:
         schedule.run_pending()
@@ -87,13 +88,4 @@ def run_job():
 
 
 if __name__ == '__main__':
-    try:
-        logger.info('Starting job')
-        run_job()
-    except Exception as e:
-        logger.exception(e)
-        logger.info('Closing job')
-        schedule.clear()
-    except KeyboardInterrupt:
-        logger.info('Closing job')
-        schedule.clear()
+    typer.run(run_job)
